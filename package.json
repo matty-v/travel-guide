@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "./deploy.sh",
+    "deploy:frontend": "./deploy.sh --frontend",
+    "deploy:functions": "./deploy.sh --functions"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",

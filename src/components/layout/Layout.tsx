@@ -8,29 +8,23 @@ export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { selectedCountry } = useCountry();
 
+  const showSidebar = !!selectedCountry;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="min-h-screen bg-gray-900">
+      {showSidebar && (
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      )}
 
-      <div className="flex">
-        {selectedCountry && (
-          <>
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="fixed bottom-4 left-4 z-40 lg:hidden bg-blue-600 text-white p-3 rounded-full shadow-lg"
-            >
-              {sidebarOpen ? '✕' : '☰'}
-            </button>
+      <div
+        className={`transition-all duration-300 min-w-0 ${
+          showSidebar ? (sidebarOpen ? 'ml-72' : 'ml-16') : 'ml-0'
+        }`}
+      >
+        <Header />
 
-            <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
-          </>
-        )}
-
-        <main className={`flex-1 ${selectedCountry ? 'lg:ml-0' : ''}`}>
-          <div className="p-6">
-            <Outlet />
-          </div>
+        <main className="p-6">
+          <Outlet />
         </main>
       </div>
     </div>

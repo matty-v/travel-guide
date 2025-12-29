@@ -17,8 +17,6 @@ interface PDFViewerProps {
 
 export function PDFViewer({ url, title }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(1.0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,15 +30,10 @@ export function PDFViewer({ url, title }: PDFViewerProps) {
     setLoading(false);
   }
 
-  const goToPrevPage = () => setPageNumber((prev) => Math.max(prev - 1, 1));
-  const goToNextPage = () => setPageNumber((prev) => Math.min(prev + 1, numPages));
-  const zoomIn = () => setScale((prev) => Math.min(prev + 0.25, 3));
-  const zoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.5));
-
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg">
-        <p className="text-red-600 mb-4">Failed to load PDF: {error}</p>
+      <div className="flex flex-col items-center justify-center py-12 bg-gray-800 rounded-lg">
+        <p className="text-red-400 mb-4">Failed to load PDF: {error}</p>
         <a
           href={url}
           target="_blank"
@@ -54,76 +47,33 @@ export function PDFViewer({ url, title }: PDFViewerProps) {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Controls */}
-      <div className="sticky top-0 z-10 flex items-center justify-between w-full bg-white border-b border-gray-200 p-3 mb-4 rounded-lg shadow-sm">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={goToPrevPage}
-            disabled={pageNumber <= 1}
-            className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Prev
-          </button>
-          <span className="text-sm text-gray-600">
-            Page {pageNumber} of {numPages || '...'}
-          </span>
-          <button
-            onClick={goToNextPage}
-            disabled={pageNumber >= numPages}
-            className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
+    <div className="overflow-x-auto -mx-6 px-6">
+      {loading && (
+        <div className="flex justify-center py-8">
+          <LoadingSpinner size="lg" />
         </div>
+      )}
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={zoomOut}
-            disabled={scale <= 0.5}
-            className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50"
+      <Document
+        file={url}
+        onLoadSuccess={onDocumentLoadSuccess}
+        onLoadError={onDocumentLoadError}
+        loading={<LoadingSpinner size="lg" />}
+        className="flex flex-col items-start gap-4"
+      >
+        {Array.from(new Array(numPages), (_, index) => (
+          <div
+            key={`page_${index + 1}`}
+            className="bg-white shadow-md rounded"
           >
-            -
-          </button>
-          <span className="text-sm text-gray-600 w-16 text-center">
-            {Math.round(scale * 100)}%
-          </span>
-          <button
-            onClick={zoomIn}
-            disabled={scale >= 3}
-            className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50"
-          >
-            +
-          </button>
-        </div>
-
-        <a
-          href={url}
-          download={title || 'document.pdf'}
-          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-        >
-          Download
-        </a>
-      </div>
-
-      {/* PDF Document */}
-      <div className="border border-gray-200 rounded-lg overflow-auto max-h-[70vh] bg-gray-100 p-4">
-        {loading && <LoadingSpinner size="lg" />}
-
-        <Document
-          file={url}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          loading={<LoadingSpinner size="lg" />}
-        >
-          <Page
-            pageNumber={pageNumber}
-            scale={scale}
-            renderTextLayer={true}
-            renderAnnotationLayer={true}
-          />
-        </Document>
-      </div>
+            <Page
+              pageNumber={index + 1}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
+            />
+          </div>
+        ))}
+      </Document>
     </div>
   );
 }

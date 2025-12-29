@@ -24,10 +24,10 @@ export function ContentView() {
       <div className="max-w-4xl mx-auto">
         {selectedCountry ? (
           <>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-gray-100 mb-4">
               Welcome to {selectedCountry.name}
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-gray-400 mb-8">
               Select a location from the menu to explore.
             </p>
 
@@ -39,11 +39,11 @@ export function ContentView() {
                   .map((region) => (
                     <div
                       key={region.id}
-                      className="p-4 bg-white rounded-lg shadow-sm border border-gray-200"
+                      className="p-4 bg-gray-800 rounded-lg shadow-sm border border-gray-700"
                     >
-                      <h3 className="font-semibold text-gray-900">{region.title}</h3>
+                      <h3 className="font-semibold text-gray-100">{region.title}</h3>
                       {region.children && region.children.length > 0 && (
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-400 mt-1">
                           {region.children.length} cities
                         </p>
                       )}
@@ -53,7 +53,7 @@ export function ContentView() {
             )}
           </>
         ) : (
-          <p className="text-gray-600">Loading country information...</p>
+          <p className="text-gray-400">Loading country information...</p>
         )}
       </div>
     );
@@ -64,12 +64,12 @@ export function ContentView() {
     const pdfUrl = `${API_URL}/pdf/${selectedCountry?.slug}/${selectedMenuItem.contentPath}`;
 
     return (
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full">
         <div className="mb-6">
-          <span className="text-sm text-gray-500 uppercase tracking-wide">
+          <span className="text-sm text-gray-400 uppercase tracking-wide">
             {selectedMenuItem.type}
           </span>
-          <h1 className="text-3xl font-bold text-gray-900">{selectedMenuItem.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-100">{selectedMenuItem.title}</h1>
         </div>
 
         <PDFViewer url={pdfUrl} title={selectedMenuItem.title} />
@@ -106,16 +106,16 @@ export function ContentView() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <span className="text-sm text-gray-500 uppercase tracking-wide">
+        <span className="text-sm text-gray-400 uppercase tracking-wide">
           {selectedMenuItem.type}
         </span>
-        <h1 className="text-3xl font-bold text-gray-900">{selectedMenuItem.title}</h1>
+        <h1 className="text-3xl font-bold text-gray-100">{selectedMenuItem.title}</h1>
       </div>
 
       {content ? (
         <MarkdownRenderer content={content.markdown} />
       ) : (
-        <p className="text-gray-500">No content available for this location.</p>
+        <p className="text-gray-400">No content available for this location.</p>
       )}
     </div>
   );

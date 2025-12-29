@@ -52,6 +52,6 @@ export const DEFAULT_PALETTE: ColorPalette = {
   primary: '#3b82f6',
   secondary: '#1e40af',
   accent: '#f59e0b',
-  background: '#f8fafc',
-  text: '#1e293b',
+  background: '#1f2937',
+  text: '#f3f4f6',
 };

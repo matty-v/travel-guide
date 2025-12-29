@@ -67,7 +67,7 @@ app.post('/admin/upload/:countrySlug/*', requireAdminHeader, (req, res) => {
     let fileBuffer = null;
     let fileMimetype = '';
     let fileOriginalName = '';
-    busboy.on('file', (fieldname, file, info) => {
+    busboy.on('file', (_fieldname, file, info) => {
         const { filename, mimeType } = info;
         fileOriginalName = filename;
         fileMimetype = mimeType;
@@ -114,19 +114,12 @@ app.post('/admin/upload/:countrySlug/*', requireAdminHeader, (req, res) => {
         console.error('Busboy error:', error.message, error.stack);
         res.status(500).json({ error: 'Failed to parse upload: ' + error.message });
     });
-    req.on('error', (error) => {
-        console.error('Request error:', error.message);
-    });
-    console.log('Starting file upload, content-type:', contentType);
-    console.log('Request readable:', req.readable);
-    // Check if rawBody is available (Cloud Functions buffers the body)
+    // Cloud Functions buffers the body, so use rawBody if available
     const rawBody = req.rawBody;
     if (rawBody) {
-        console.log('Using rawBody, length:', rawBody.length);
         busboy.end(rawBody);
     }
     else {
-        console.log('Piping request stream');
         req.pipe(busboy);
     }
 });

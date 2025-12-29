@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CountryProvider } from './context/CountryContext';
 import { Layout } from './components/layout/Layout';
@@ -14,7 +14,7 @@ import './index.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
         <CountryProvider>
           <Routes>
@@ -31,7 +31,7 @@ function App() {
           </Routes>
         </CountryProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
