@@ -12,10 +12,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 interface PDFViewerProps {
   url: string;
-  title?: string;
 }
 
-export function PDFViewer({ url, title }: PDFViewerProps) {
+export function PDFViewer({ url }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

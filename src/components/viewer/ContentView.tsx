@@ -72,7 +72,7 @@ export function ContentView() {
           <h1 className="text-3xl font-bold text-gray-100">{selectedMenuItem.title}</h1>
         </div>
 
-        <PDFViewer url={pdfUrl} title={selectedMenuItem.title} />
+        <PDFViewer url={pdfUrl} />
       </div>
     );
   }
