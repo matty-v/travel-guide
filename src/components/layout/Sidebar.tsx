@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DEFAULT_PALETTE } from '../../types';
 import type { MenuItem, ColorPalette } from '../../types';
 import { useCountry } from '../../context/CountryContext';
@@ -12,6 +13,7 @@ const COLLAPSED_WIDTH = 'w-16';
 const EXPANDED_WIDTH = 'w-72';
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
+  const navigate = useNavigate();
   const { selectedCountry, selectedMenuItem, selectMenuItem, clearSelection } = useCountry();
 
   const palette = selectedCountry?.palette || DEFAULT_PALETTE;
@@ -76,12 +78,12 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         className={`shrink-0 border-t ${isOpen ? 'p-3' : 'py-3'}`}
         style={{ borderColor: `${palette.text}15` }}
       >
-        <a
-          href="/"
+        <button
           onClick={() => {
             clearSelection();
+            navigate('/');
           }}
-          className={`flex items-center rounded-lg hover:bg-black hover:bg-opacity-10 transition-colors ${
+          className={`w-full flex items-center rounded-lg hover:bg-black hover:bg-opacity-10 transition-colors ${
             isOpen ? 'gap-3 px-3 py-2' : 'justify-center py-3'
           }`}
           style={{ color: palette.text }}
@@ -89,7 +91,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         >
           <span className="text-xl">🏠</span>
           {isOpen && <span className="font-medium">Home</span>}
-        </a>
+        </button>
       </div>
     </aside>
   );
