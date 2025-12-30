@@ -147,6 +147,7 @@ function requireAdmin(req, res, next) {
 app.get('/countries', async (_req, res) => {
     try {
         const countries = await getCountriesIndex();
+        res.set('Cache-Control', 'no-cache, must-revalidate');
         res.json(countries);
     }
     catch (error) {
@@ -161,6 +162,7 @@ app.get('/countries/:slug', async (req, res) => {
         if (!country) {
             return res.status(404).json({ error: 'Country not found' });
         }
+        res.set('Cache-Control', 'no-cache, must-revalidate');
         res.json(country);
     }
     catch (error) {
@@ -180,10 +182,16 @@ app.get('/content/:countrySlug/*', async (req, res) => {
         }
         const [metadata] = await file.getMetadata();
         const [contents] = await file.download();
+        // Check If-None-Match header for conditional requests
+        const clientEtag = req.headers['if-none-match'];
+        if (clientEtag && clientEtag === metadata.etag) {
+            return res.status(304).send();
+        }
         res.set({
             'Content-Type': 'text/markdown',
             ETag: metadata.etag,
             'Last-Modified': metadata.updated,
+            'Cache-Control': 'no-cache, must-revalidate',
         });
         res.send(contents.toString());
     }
@@ -268,8 +276,11 @@ app.put('/admin/content/:countrySlug/*', requireAdmin, async (req, res) => {
         const file = storage.bucket(BUCKET_NAME).file(`${countrySlug}/${contentPath}`);
         await file.save(req.body, {
             contentType: 'text/markdown',
+            metadata: {
+                cacheControl: 'no-cache, max-age=0',
+            },
         });
-        res.json({ success: true });
+        res.json({ success: true, timestamp: Date.now() });
     }
     catch (error) {
         console.error('Error saving content:', error);
