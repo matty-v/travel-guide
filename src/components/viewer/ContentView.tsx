@@ -12,46 +12,61 @@ export function ContentView() {
   const { content, loading, error, loadContent } = useContent();
 
   useEffect(() => {
-    // Only load content for markdown items
-    if (selectedCountry && selectedMenuItem && selectedMenuItem.contentType !== 'pdf') {
+    if (selectedCountry && !selectedMenuItem) {
+      // Load landing page content
+      loadContent(selectedCountry.slug, '_landing.md');
+    } else if (selectedCountry && selectedMenuItem && selectedMenuItem.contentType !== 'pdf') {
+      // Load regular menu item content
       loadContent(selectedCountry.slug, selectedMenuItem.contentPath);
     }
   }, [selectedCountry, selectedMenuItem, loadContent]);
 
   // Show country landing page if no menu item selected
   if (!selectedMenuItem) {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <LoadingSpinner size="lg" />
+        </div>
+      );
+    }
+
     return (
       <div className="max-w-4xl mx-auto">
         {selectedCountry ? (
-          <>
-            <h1 className="text-4xl font-bold text-gray-100 mb-4">
-              Welcome to {selectedCountry.name}
-            </h1>
-            <p className="text-lg text-gray-400 mb-8">
-              Select a location from the menu to explore.
-            </p>
+          content ? (
+            <MarkdownRenderer content={content.markdown} />
+          ) : (
+            <>
+              <h1 className="text-4xl font-bold text-gray-100 mb-4">
+                Welcome to {selectedCountry.name}
+              </h1>
+              <p className="text-lg text-gray-400 mb-8">
+                Select a location from the menu to explore.
+              </p>
 
-            {selectedCountry.menuItems.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {selectedCountry.menuItems
-                  .filter((item) => item.type === 'region')
-                  .sort((a, b) => a.order - b.order)
-                  .map((region) => (
-                    <div
-                      key={region.id}
-                      className="p-4 bg-gray-800 rounded-lg shadow-sm border border-gray-700"
-                    >
-                      <h3 className="font-semibold text-gray-100">{region.title}</h3>
-                      {region.children && region.children.length > 0 && (
-                        <p className="text-sm text-gray-400 mt-1">
-                          {region.children.length} cities
-                        </p>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            )}
-          </>
+              {selectedCountry.menuItems.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {selectedCountry.menuItems
+                    .filter((item) => item.type === 'region')
+                    .sort((a, b) => a.order - b.order)
+                    .map((region) => (
+                      <div
+                        key={region.id}
+                        className="p-4 bg-gray-800 rounded-lg shadow-sm border border-gray-700"
+                      >
+                        <h3 className="font-semibold text-gray-100">{region.title}</h3>
+                        {region.children && region.children.length > 0 && (
+                          <p className="text-sm text-gray-400 mt-1">
+                            {region.children.length} cities
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </>
+          )
         ) : (
           <p className="text-gray-400">Loading country information...</p>
         )}
@@ -105,13 +120,6 @@ export function ContentView() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <span className="text-sm text-gray-400 uppercase tracking-wide">
-          {selectedMenuItem.type}
-        </span>
-        <h1 className="text-3xl font-bold text-gray-100">{selectedMenuItem.title}</h1>
-      </div>
-
       {content ? (
         <MarkdownRenderer content={content.markdown} />
       ) : (

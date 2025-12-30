@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DEFAULT_PALETTE } from '../../types';
 import type { MenuItem, ColorPalette } from '../../types';
 import { useCountry } from '../../context/CountryContext';
@@ -12,7 +13,8 @@ const COLLAPSED_WIDTH = 'w-16';
 const EXPANDED_WIDTH = 'w-72';
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
-  const { selectedCountry, selectedMenuItem, selectMenuItem, clearSelection } = useCountry();
+  const navigate = useNavigate();
+  const { selectedCountry, selectedMenuItem, selectMenuItem, clearMenuItem } = useCountry();
 
   const palette = selectedCountry?.palette || DEFAULT_PALETTE;
 
@@ -55,6 +57,24 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar content */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className={isOpen ? 'p-3' : 'py-3'}>
+          {/* Landing page link - always first */}
+          {selectedCountry && (
+            <button
+              onClick={clearMenuItem}
+              className={`w-full flex items-center rounded-lg transition-colors mb-2 ${
+                isOpen ? 'gap-3 px-3 py-2' : 'justify-center py-3'
+              }`}
+              style={{
+                backgroundColor: !selectedMenuItem ? palette.primary : 'transparent',
+                color: !selectedMenuItem ? '#ffffff' : palette.text,
+              }}
+              title={selectedCountry.name}
+            >
+              <span className="text-xl">🌟</span>
+              {isOpen && <span className="font-medium truncate">{selectedCountry.name}</span>}
+            </button>
+          )}
+
           {/* Menu items */}
           {selectedCountry && (
             <nav>
@@ -78,8 +98,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       >
         <button
           onClick={() => {
-            clearSelection();
-            window.location.hash = '#/';
+            navigate('/');
           }}
           className={`w-full flex items-center rounded-lg hover:bg-black hover:bg-opacity-10 transition-colors ${
             isOpen ? 'gap-3 px-3 py-2' : 'justify-center py-3'

@@ -1,14 +1,27 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export function Header() {
   const { isAdmin, logout } = useAuth();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <header className="bg-gray-800 border-b border-gray-700 h-14">
-      <div className="flex items-center justify-end h-full px-4">
+      <div className="flex items-center justify-between h-full px-4">
+        {isAdminRoute ? (
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+          >
+            <span className="text-xl">🏠</span>
+            <span className="font-medium">Home</span>
+          </Link>
+        ) : (
+          <div />
+        )}
         {/* Settings menu */}
         <div className="relative">
           <button

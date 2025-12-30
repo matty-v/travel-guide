@@ -5,11 +5,12 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 
 export function CountryList() {
   const navigate = useNavigate();
-  const { countries, loading, error, fetchCountries, selectCountry } = useCountry();
+  const { countries, loading, error, fetchCountries, selectCountry, clearSelection } = useCountry();
 
   useEffect(() => {
+    clearSelection();
     fetchCountries();
-  }, [fetchCountries]);
+  }, [clearSelection, fetchCountries]);
 
   const handleCountryClick = async (slug: string) => {
     await selectCountry(slug);
@@ -49,9 +50,6 @@ export function CountryList() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-100 mb-2">Explore the World</h1>
-      <p className="text-gray-400 mb-8">Select a country to discover amazing destinations</p>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {countries.map((country) => (
           <button

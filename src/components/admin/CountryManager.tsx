@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { DEFAULT_PALETTE } from '../../types';
 import type { Country } from '../../types';
 import { fetchCountries, createCountry, updateCountry, deleteCountry } from '../../services/api';
@@ -70,7 +71,18 @@ export function CountryManager() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Manage Countries</h1>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/admin"
+            className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Back to Admin Dashboard"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-100">Manage Countries</h1>
+        </div>
         <button
           onClick={() => setIsCreating(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -94,22 +106,22 @@ export function CountryManager() {
         {countries.map((country) => (
           <div
             key={country.id}
-            className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-200"
+            className="flex items-center justify-between p-4 bg-gray-800 rounded-lg shadow-sm border border-gray-700"
           >
             <div>
-              <h3 className="font-semibold text-gray-900">{country.name}</h3>
-              <p className="text-sm text-gray-500">/{country.slug}</p>
+              <h3 className="font-semibold text-gray-100">{country.name}</h3>
+              <p className="text-sm text-gray-400">/{country.slug}</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setEditingCountry(country)}
-                className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
+                className="px-3 py-1 text-sm text-blue-400 hover:bg-gray-700 rounded"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(country.slug)}
-                className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
+                className="px-3 py-1 text-sm text-red-400 hover:bg-gray-700 rounded"
               >
                 Delete
               </button>
@@ -139,33 +151,33 @@ function CountryForm({ country, onSubmit, onCancel }: CountryFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-      <h2 className="text-lg font-semibold mb-4">
+    <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
+      <h2 className="text-lg font-semibold text-gray-100 mb-4">
         {country ? 'Edit Country' : 'Add New Country'}
       </h2>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Name
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Slug
           </label>
           <input
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
             required
             disabled={!!country}
           />
@@ -173,26 +185,26 @@ function CountryForm({ country, onSubmit, onCancel }: CountryFormProps) {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Description
         </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+          className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           rows={2}
         />
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Image URL
         </label>
         <input
           type="url"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+          className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
@@ -206,7 +218,7 @@ function CountryForm({ country, onSubmit, onCancel }: CountryFormProps) {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+          className="px-4 py-2 bg-gray-600 text-gray-100 rounded-lg hover:bg-gray-500"
         >
           Cancel
         </button>

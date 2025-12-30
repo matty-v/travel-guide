@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { DEFAULT_PALETTE } from '../../types';
 import type { Country, ColorPalette } from '../../types';
 import { fetchCountries, updateCountry } from '../../services/api';
@@ -75,7 +76,18 @@ export function PaletteEditor() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Color Palettes</h1>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/admin"
+            className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Back to Admin Dashboard"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-100">Color Palettes</h1>
+        </div>
         {hasChanges && (
           <button
             onClick={handleSave}
@@ -88,7 +100,7 @@ export function PaletteEditor() {
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-300 mb-2">
           Select Country
         </label>
         <select
@@ -97,7 +109,7 @@ export function PaletteEditor() {
             const country = countries.find((c) => c.slug === e.target.value);
             setSelectedCountry(country || null);
           }}
-          className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-lg"
+          className="w-full max-w-xs px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
         >
           <option value="">Select country...</option>
           {countries.map((country) => (
@@ -112,10 +124,10 @@ export function PaletteEditor() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Colors</h2>
+              <h2 className="text-lg font-semibold text-gray-100">Colors</h2>
               <button
                 onClick={handleReset}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-sm text-gray-400 hover:text-gray-300"
               >
                 Reset to Default
               </button>
@@ -124,7 +136,7 @@ export function PaletteEditor() {
             {colorFields.map(({ key, label }) => (
               <div key={key} className="flex items-center gap-4">
                 <div className="w-32">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-300">
                     {label}
                   </label>
                 </div>
@@ -138,16 +150,16 @@ export function PaletteEditor() {
                   type="text"
                   value={palette[key]}
                   onChange={(e) => handleColorChange(key, e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg font-mono text-sm"
                 />
               </div>
             ))}
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold mb-4">Preview</h2>
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">Preview</h2>
             <div
-              className="rounded-lg p-4 border border-gray-200"
+              className="rounded-lg p-4 border border-gray-700"
               style={{ backgroundColor: palette.background }}
             >
               <div
@@ -183,8 +195,8 @@ export function PaletteEditor() {
       )}
 
       {!selectedCountry && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Select a country to edit its color palette</p>
+        <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+          <p className="text-gray-400">Select a country to edit its color palette</p>
         </div>
       )}
     </div>

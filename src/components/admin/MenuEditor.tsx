@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import type { DropResult } from '@hello-pangea/dnd';
 import type { Country, MenuItem, ContentType } from '../../types';
@@ -95,12 +96,23 @@ export function MenuEditor() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Menu Structure</h1>
-        {saving && <span className="text-sm text-gray-500">Saving...</span>}
+        <div className="flex items-center gap-4">
+          <Link
+            to="/admin"
+            className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Back to Admin Dashboard"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-100">Menu Structure</h1>
+        </div>
+        {saving && <span className="text-sm text-gray-400">Saving...</span>}
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-300 mb-2">
           Select Country
         </label>
         <select
@@ -109,7 +121,7 @@ export function MenuEditor() {
             const country = countries.find((c) => c.slug === e.target.value);
             setSelectedCountry(country || null);
           }}
-          className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-lg"
+          className="w-full max-w-xs px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
         >
           {countries.map((country) => (
             <option key={country.id} value={country.slug}>
@@ -148,13 +160,13 @@ export function MenuEditor() {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`p-4 mb-2 bg-white rounded-lg shadow-sm border border-gray-200 ${
-                              snapshot.isDragging ? 'shadow-lg' : ''
+                            className={`p-4 mb-2 bg-gray-800 rounded-lg shadow-sm border border-gray-700 ${
+                              snapshot.isDragging ? 'shadow-lg border-gray-600' : ''
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className="text-gray-400 cursor-grab">⠿</span>
+                                <span className="text-gray-500 cursor-grab">⠿</span>
                                 <span className="text-lg">
                                   {item.type === 'region'
                                     ? '📍'
@@ -163,22 +175,22 @@ export function MenuEditor() {
                                     : '🏛️'}
                                 </span>
                                 <div>
-                                  <p className="font-medium text-gray-900">
+                                  <p className="font-medium text-gray-100">
                                     {item.title}
                                     <span className={`ml-2 text-xs px-2 py-0.5 rounded ${
                                       item.contentType === 'pdf'
-                                        ? 'bg-red-100 text-red-700'
-                                        : 'bg-green-100 text-green-700'
+                                        ? 'bg-red-900 text-red-300'
+                                        : 'bg-green-900 text-green-300'
                                     }`}>
                                       {item.contentType || 'markdown'}
                                     </span>
                                   </p>
-                                  <p className="text-sm text-gray-500">{item.contentPath}</p>
+                                  <p className="text-sm text-gray-400">{item.contentPath}</p>
                                 </div>
                               </div>
                               <button
                                 onClick={() => handleDeleteItem(item.id)}
-                                className="text-red-600 hover:text-red-700"
+                                className="text-red-400 hover:text-red-300"
                               >
                                 Delete
                               </button>
@@ -222,24 +234,24 @@ function MenuItemForm({ onSubmit, onCancel }: MenuItemFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 p-4 bg-gray-50 rounded-lg">
+    <form onSubmit={handleSubmit} className="mb-4 p-4 bg-gray-800 rounded-lg border border-gray-700">
       <div className="grid grid-cols-4 gap-4 mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as 'region' | 'city' | 'sight')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
           >
             <option value="region">Region</option>
             <option value="city">City</option>
@@ -247,32 +259,32 @@ function MenuItemForm({ onSubmit, onCancel }: MenuItemFormProps) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Content Type</label>
           <select
             value={contentType}
             onChange={(e) => setContentType(e.target.value as ContentType)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
           >
             <option value="markdown">Markdown</option>
             <option value="pdf">PDF</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Slug</label>
           <input
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
             required
           />
         </div>
       </div>
       <div className="flex gap-2">
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
           Add
         </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded-lg">
+        <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-600 text-gray-100 rounded-lg hover:bg-gray-500">
           Cancel
         </button>
       </div>

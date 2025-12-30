@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import MDEditor from '@uiw/react-md-editor';
 import mammoth from 'mammoth';
 import TurndownService from 'turndown';
@@ -186,7 +187,18 @@ export function ContentEditor() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Content Editor</h1>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/admin"
+            className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Back to Admin Dashboard"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-100">Content Editor</h1>
+        </div>
         <div className="flex items-center gap-3">
           {selectedItem && !isPdfContent && (
             <>
@@ -221,7 +233,7 @@ export function ContentEditor() {
 
       <div className="grid grid-cols-4 gap-6 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Country
           </label>
           <select
@@ -233,7 +245,7 @@ export function ContentEditor() {
               setContent('');
               setUploadedPdf(null);
             }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg"
           >
             <option value="">Select country...</option>
             {countries.map((country) => (
@@ -245,21 +257,37 @@ export function ContentEditor() {
         </div>
 
         <div className="col-span-3">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Content Item
           </label>
           <select
             value={selectedItem?.id || ''}
             onChange={(e) => {
-              const item = selectedCountry?.menuItems.find((i) => i.id === e.target.value);
-              setSelectedItem(item || null);
+              if (e.target.value === '_landing') {
+                // Special landing page item
+                setSelectedItem({
+                  id: '_landing',
+                  type: 'region',
+                  title: `${selectedCountry?.name} Landing Page`,
+                  slug: '_landing',
+                  contentType: 'markdown',
+                  contentPath: '_landing.md',
+                  order: -1,
+                } as MenuItem);
+              } else {
+                const item = selectedCountry?.menuItems.find((i) => i.id === e.target.value);
+                setSelectedItem(item || null);
+              }
               setContent('');
               setUploadedPdf(null);
             }}
             disabled={!selectedCountry}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg disabled:bg-gray-100"
+            className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg disabled:opacity-50"
           >
             <option value="">Select item...</option>
+            {selectedCountry && (
+              <option value="_landing">🏠 {selectedCountry.name} Landing Page</option>
+            )}
             {selectedCountry?.menuItems.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.type === 'region' ? '📍' : item.type === 'city' ? '🏙️' : '🏛️'}{' '}
@@ -273,27 +301,27 @@ export function ContentEditor() {
 
       {/* PDF Content Editor */}
       {selectedItem && isPdfContent && (
-        <div className="bg-gray-50 rounded-lg p-8">
+        <div className="bg-gray-800 rounded-lg p-8 border border-gray-700">
           <div className="text-center">
             <div className="text-4xl mb-4">📄</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-100 mb-2">
               PDF Content: {selectedItem.title}
             </h3>
 
             {uploadedPdf ? (
               <div className="mb-6">
-                <p className="text-green-600 mb-4">PDF is uploaded</p>
+                <p className="text-green-400 mb-4">PDF is uploaded</p>
                 <a
                   href={uploadedPdf}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 underline"
+                  className="text-blue-400 hover:text-blue-300 underline"
                 >
                   View current PDF
                 </a>
               </div>
             ) : (
-              <p className="text-gray-500 mb-6">No PDF uploaded yet</p>
+              <p className="text-gray-400 mb-6">No PDF uploaded yet</p>
             )}
 
             <input
@@ -311,7 +339,7 @@ export function ContentEditor() {
             >
               {saving ? 'Uploading...' : uploadedPdf ? 'Replace PDF' : 'Upload PDF'}
             </button>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-400 mt-2">
               Accepts .pdf or .docx files (DOCX will be converted to PDF)
             </p>
           </div>
@@ -320,7 +348,7 @@ export function ContentEditor() {
 
       {/* Markdown Content Editor */}
       {selectedItem && !isPdfContent && (
-        <div data-color-mode="light">
+        <div data-color-mode="dark">
           <MDEditor
             value={content}
             onChange={handleContentChange}
@@ -331,14 +359,14 @@ export function ContentEditor() {
       )}
 
       {!selectedItem && selectedCountry && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Select a content item to start editing</p>
+        <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+          <p className="text-gray-400">Select a content item to start editing</p>
         </div>
       )}
 
       {!selectedCountry && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Select a country to view its content items</p>
+        <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+          <p className="text-gray-400">Select a country to view its content items</p>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { useCountry } from '../../context/CountryContext';
@@ -7,8 +7,10 @@ import { useCountry } from '../../context/CountryContext';
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { selectedCountry } = useCountry();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
-  const showSidebar = !!selectedCountry;
+  const showSidebar = !!selectedCountry && !isAdminRoute;
 
   return (
     <div className="min-h-screen bg-gray-900">

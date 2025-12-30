@@ -11,6 +11,7 @@ interface CountryContextType {
   fetchCountries: () => Promise<void>;
   selectCountry: (slug: string) => Promise<void>;
   selectMenuItem: (item: MenuItem) => void;
+  clearMenuItem: () => void;
   clearSelection: () => void;
 }
 
@@ -60,6 +61,10 @@ export function CountryProvider({ children }: { children: ReactNode }) {
     setSelectedMenuItem(item);
   }, []);
 
+  const clearMenuItem = useCallback(() => {
+    setSelectedMenuItem(null);
+  }, []);
+
   const clearSelection = useCallback(() => {
     setSelectedCountry(null);
     setSelectedMenuItem(null);
@@ -76,6 +81,7 @@ export function CountryProvider({ children }: { children: ReactNode }) {
         fetchCountries,
         selectCountry,
         selectMenuItem,
+        clearMenuItem,
         clearSelection,
       }}
     >
