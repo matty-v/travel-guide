@@ -90,6 +90,7 @@ export function CountryProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCountry() {
   const context = useContext(CountryContext);
   if (context === undefined) {

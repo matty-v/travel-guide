@@ -15,6 +15,10 @@ const BUCKET_NAME = process.env.GCS_BUCKET || 'travel-guide-data';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // Types
+interface CloudFunctionRequest extends Request {
+  rawBody?: Buffer;
+}
+
 interface Country {
   id: string;
   name: string;
@@ -166,7 +170,7 @@ app.post(
     });
 
     // Cloud Functions buffers the body, so use rawBody if available
-    const rawBody = (req as any).rawBody;
+    const rawBody = (req as CloudFunctionRequest).rawBody;
     if (rawBody) {
       busboy.end(rawBody);
     } else {
