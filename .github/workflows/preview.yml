@@ -1,13 +1,18 @@
-name: Deploy to Firebase
+name: PR Preview
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 
 jobs:
-  build-and-deploy:
+  preview:
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,11 +37,27 @@ jobs:
         env:
           VITE_API_URL: https://travel-guide-api-g56q77hy2a-uc.a.run.app
 
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Preview Channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: kinetic-object-322814
           target: travel-voget
-          channelId: live
+          expires: 7d
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cleanup Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: kinetic-object-322814
+          target: travel-voget
+          expires: 0d
